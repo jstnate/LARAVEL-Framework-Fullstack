@@ -25,7 +25,7 @@ class TrackController extends Controller
      */
     public function create()
     {
-        dd('create');
+        return Inertia::render('Track/create');
     }
 
     /**

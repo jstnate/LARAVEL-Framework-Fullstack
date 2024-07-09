@@ -7,7 +7,7 @@
                 <div class="font-900 text-xl">{{ track.title }}</div>
                 <div class="font-700 text-sm mb-4">{{ track.artist }}</div>
                 <button
-                    class="font-900 bg-blue-700 hover:bg-blue-900 text-white uppercase w-full rounded py-2 px-4 text-center"
+                    class="font-900 bg-blue-700 hover:bg-blue-900 text-white capitalize w-full rounded py-2 px-4 text-center"
                     @click="handleClick"
                 >
                     Lire la musique
