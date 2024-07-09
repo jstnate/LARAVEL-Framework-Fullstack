@@ -15,7 +15,7 @@ class Track extends Model
         'artist',
         'image',
         'music',
-        'visibility',
-        'stream',
+        'display',
+        'play_count',
     ];
 }

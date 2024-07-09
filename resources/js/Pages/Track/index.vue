@@ -1,7 +1,10 @@
 <template>
     <MusicLayout>
         <template #title>
-            <p>lol</p>
+            <p>Wishify</p>
+        </template>
+        <template #action>
+            <p>Ajouter une musique</p>
         </template>
         <template #content>
             <div>
@@ -9,10 +12,16 @@
 
                 <!-- {{ tracks }} -->
                 <div>
-                    <ul>
-                        <li v-for="track in tracks" :key="track.uuid">
+                    <ul class="grid grid-cols-4 gap-4 px-8 py-4">
+                        <!-- <li v-for="track in tracks" :key="track.uuid">
                             {{ track.title }} - {{ track.artist }}
-                        </li>
+                        </li> -->
+                        <Track
+                            v-for="track in tracks"
+                            :key="track.uuid"
+                            :track="track"
+                            @played="play"
+                        />
                     </ul>
                 </div>
             </div>
@@ -21,16 +30,25 @@
 </template>
 
 <script>
-import MusicLayout from '@/Layouts/MusicLayout.vue';
+import MusicLayout from "@/Layouts/MusicLayout.vue";
+import Track from "@/Components/Track/Track.vue";
+
 export default {
-    name: 'TrackIndex',
+    name: "TrackIndex",
     components: {
         MusicLayout,
+        Track,
     },
     props: {
         tracks: {
             type: Array,
             required: true,
+        },
+    },
+    methods: {
+        play(track) {
+            const audio = new Audio(`storage/${track.music}`);
+            audio.play();
         },
     },
 };
