@@ -46,7 +46,7 @@ class TrackController extends Controller
         $image_path = $request->image->storeAs('tracks/images', $uuid . '.' . $image_extension);
         $music_extension = $request->music->extension();
         $music_path = $request->music->storeAs('tracks/musics', $uuid . '.' . $music_extension);
-        
+
         $display_value = $request->display == true ? 1 : 0;
 
         Track::create([
@@ -73,24 +73,37 @@ class TrackController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Track $track)
     {
-        dd('edit');
+        return Inertia::render('Track/edit',[
+            'track' => $track,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Track $track)
     {
-        dd('update');
+        $request->validate([
+            'title' => ['required', 'string', 'min:3', 'max:255'],
+            'artist' => ['required', 'string', 'min:3', 'max:255'],
+            'display' => ['required'],
+        ]);
+
+        $track->title = $request->title;
+        $track->artist = $request->artist;
+        $track->display = $request->display === 'true' ? 1 : 0;
+        $track->save();
+
+        return redirect()->route('tracks.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Track $track)
     {
-        dd('destroy');
+        $track->delete();
     }
 }

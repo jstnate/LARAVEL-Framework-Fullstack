@@ -19,4 +19,9 @@ class Track extends Model
         'display',
         'play_count',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'uuid';
+    }
 }

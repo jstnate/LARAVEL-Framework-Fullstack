@@ -117,7 +117,7 @@ export default {
                 artist: "",
                 music: null,
                 image: null,
-                display: "true", // Ensure display is treated as string to match select options
+                display: "true",
             }),
         };
     },
