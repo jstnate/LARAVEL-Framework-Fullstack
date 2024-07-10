@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('failed_jobs', function (Blueprint $table) {
+        Schema::create('playlist_track', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->unique();
-            $table->text('connection');
-            $table->text('queue');
-            $table->longText('payload');
-            $table->longText('exception');
-            $table->timestamp('failed_at')->useCurrent();
+            $table->foreignId('playlist_id')->constrained();
+            $table->foreignId('track_id')->constrained();
+            $table->timestamps();
         });
     }
 
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('failed_jobs');
+        Schema::dropIfExists('playlist_track');
     }
 };

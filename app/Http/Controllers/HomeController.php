@@ -8,6 +8,6 @@ class HomeController extends Controller
 {
     public function test()
     {
-        dd('Hello World');
+        dd('Hello world');
     }
 }

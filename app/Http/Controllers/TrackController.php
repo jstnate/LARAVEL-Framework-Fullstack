@@ -1,11 +1,11 @@
 <?php
+
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Inertia\Inertia;
 use App\Models\Track;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-
+use Inertia\Inertia;
 
 class TrackController extends Controller
 {
@@ -16,7 +16,7 @@ class TrackController extends Controller
     {
         $tracks = Track::where('display', true)->orderBy('artist')->get();
 
-        return Inertia::render('Track/index', [
+        return Inertia::render('Track/Index', [
             'tracks' => $tracks,
         ]);
     }
@@ -26,7 +26,7 @@ class TrackController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Track/create');
+        return Inertia::render('Track/Create');
     }
 
     /**
@@ -34,32 +34,32 @@ class TrackController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
-            'title' => ['required', 'string', 'min:3', 'max:255'],
+        $request->validate([
+            'title' => ['required', 'string', 'min:5', 'max:255'],
             'artist' => ['required', 'string', 'min:3', 'max:255'],
-            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'music' => ['required', 'file', 'mimes:mp3,wav,ogg', 'max:10240']
+            'display' => ['required', 'boolean'],
+            'image' => ['required', 'image', 'max:10000'],
+            'music' => ['required', 'file', 'mimes:mp3,wav', 'max:10000'],
         ]);
+
         $uuid = 'trk-' . Str::uuid();
 
-        $image_extension = $request->image->extension();
-        $image_path = $request->image->storeAs('tracks/images', $uuid . '.' . $image_extension);
-        $music_extension = $request->music->extension();
-        $music_path = $request->music->storeAs('tracks/musics', $uuid . '.' . $music_extension);
+        $imageExtension = $request->image->extension();
+        $imagePath = $request->image->storeAs('tracks/images', $uuid . '.' . $imageExtension);
 
-        $display_value = $request->display == true ? 1 : 0;
+        $musicExtension = $request->music->extension();
+        $musicPath = $request->music->storeAs('tracks/musics', $uuid . '.' . $musicExtension);
 
         Track::create([
             'uuid' => $uuid,
             'title' => $request->title,
             'artist' => $request->artist,
-            'image' => $image_path,
-            'music' => $music_path,
-            'display' => $display_value
+            'display' => $request->display,
+            'image' => $imagePath,
+            'music' => $musicPath,
         ]);
 
-        return redirect()->route('tracks.index')->with('success', 'Track successfully created!');
-
+        return redirect()->route('tracks.index');
     }
 
     /**
@@ -67,7 +67,7 @@ class TrackController extends Controller
      */
     public function show(string $id)
     {
-        dd('show');
+        //
     }
 
     /**
@@ -75,7 +75,7 @@ class TrackController extends Controller
      */
     public function edit(Track $track)
     {
-        return Inertia::render('Track/edit',[
+        return Inertia::render('Track/Edit', [
             'track' => $track,
         ]);
     }
@@ -86,14 +86,14 @@ class TrackController extends Controller
     public function update(Request $request, Track $track)
     {
         $request->validate([
-            'title' => ['required', 'string', 'min:3', 'max:255'],
+            'title' => ['required', 'string', 'min:5', 'max:255'],
             'artist' => ['required', 'string', 'min:3', 'max:255'],
-            'display' => ['required'],
+            'display' => ['required', 'boolean'],
         ]);
 
         $track->title = $request->title;
         $track->artist = $request->artist;
-        $track->display = $request->display === 'true' ? 1 : 0;
+        $track->display = $request->display;
         $track->save();
 
         return redirect()->route('tracks.index');
@@ -105,5 +105,7 @@ class TrackController extends Controller
     public function destroy(Track $track)
     {
         $track->delete();
+
+        return redirect()->route('tracks.index');
     }
 }
