@@ -10,7 +10,7 @@
       </Link>
     </template>
     <template #content>
-      <table class="table-auto">
+      <table class="table-auto border-separate border-spacing-4">
         <thead>
           <tr>
             <th>#</th>

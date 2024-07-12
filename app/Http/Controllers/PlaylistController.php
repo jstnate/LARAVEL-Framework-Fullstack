@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ApiKey;
 use App\Models\Playlist;
 use App\Models\Track;
 use Illuminate\Http\Request;
@@ -94,4 +95,20 @@ class PlaylistController extends Controller
     {
         //
     }
+
+    public function getPlaylists(Request $request)
+    {
+        $apiKey = ApiKey::where('key', $request->header('x-api-key'))->first();
+
+        if (!$apiKey) {
+            return response()->json(['error' => 'Invalid API key'], 401);
+        }
+
+        $playlists = $apiKey->user->playlists()->with(['tracks' => function($query) {
+            $query->select('tracks.id', 'tracks.title');
+        }])->withCount('tracks')->get();
+
+        return response()->json($playlists);
+    }
+
 }

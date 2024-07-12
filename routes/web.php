@@ -5,12 +5,24 @@ use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\TrackController;
 use App\Http\Middleware\IsAdmin;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ApiKeyController;
+
 
 Route::get('/', [TrackController::class, 'index'])->name('tracks.index');
 Route::get('/test', [HomeController::class, 'test'])->name('test');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::resource('playlists', PlaylistController::class);
+
+    Route::controller(ApiKeyController::class)
+        ->prefix('api-keys')
+        ->name('api-keys.')
+        ->group(function () {
+            Route::get('/index', 'index')->name('index');
+            Route::get('/create', 'create')->name('create');
+            Route::post('/store', 'store')->name('store');
+            Route::delete('/{apiKey}', 'destroy')->name('destroy');
+        });
 
     Route::controller(TrackController::class)
         ->prefix('tracks')
@@ -25,3 +37,4 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
             Route::delete('/{track}', 'destroy')->name('destroy');
     });
 });
+
